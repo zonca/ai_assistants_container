@@ -32,7 +32,7 @@ jobs:
           sudo apt-get -y install podman
 
       - name: Setup podman-hpc
-        uses: NERSC/podman-hpc@v1.1.4
+        uses: NERSC/podman-hpc/.github/actions/build-podman-hpc@v1.1.4
         with:
           version: 'latest'
 
