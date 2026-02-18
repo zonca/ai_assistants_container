@@ -5,16 +5,10 @@ A lightweight container image based on Node.js 24 that provides a foundation for
 ## Features
 
 This container is designed to include the following terminal-based AI coding assistants:
-- **codex-cli**: OpenAI Codex command-line interface
-- **gemini-cli**: Google Gemini command-line interface
-- **opencode**: Code assistance tool
-- **crush**: AI coding assistant
-
-### Important Note
-
-The specific npm package names for these tools may not exist yet or may have different names in the npm registry. The Containerfile attempts to install these tools using both direct names and scoped/alternative names (e.g., `@openai/codex-cli`, `@google/generative-ai-cli`). The build process uses a best-effort approach, allowing the build to succeed even if specific packages are not found.
-
-If you know the correct package names for these tools, you can update the Containerfile accordingly.
+- **codex**: OpenAI Codex CLI (`@openai/codex`)
+- **gemini**: Google Gemini CLI (`@google/gemini-cli`)
+- **opencode**: OpenCode CLI (`opencode-ai`)
+- **crush**: Charm Crush (`@charmland/crush`)
 
 ## Base Image
 

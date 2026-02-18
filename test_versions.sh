@@ -102,11 +102,11 @@ echo ""
 
 # Note about missing tools
 if [ ${#failed_tools[@]} -gt 0 ]; then
-    echo "NOTE: Some tools are not installed. This may be expected if the npm packages"
-    echo "do not exist with the specified names. The container provides a Node.js 24"
-    echo "environment ready for installing AI assistant tools when they become available."
+    echo "ERROR: One or more expected tools are missing."
     echo ""
+    exit 1
 fi
 
 echo "Container test completed!"
 echo "Container is functional and ready for use."
+exit 0
