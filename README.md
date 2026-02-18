@@ -1,14 +1,29 @@
 # AI Assistants Container
 
-A lightweight container image based on Node.js 24 that includes terminal-based AI coding assistants.
+A lightweight container image based on Node.js 24 that provides a foundation for terminal-based AI coding assistants.
 
 ## Features
 
-This container includes the following terminal-based AI coding assistants:
+This container is designed to include the following terminal-based AI coding assistants:
 - **codex-cli**: OpenAI Codex command-line interface
 - **gemini-cli**: Google Gemini command-line interface
 - **opencode**: Code assistance tool
 - **crush**: AI coding assistant
+
+### Important Note
+
+The specific npm package names for these tools may not exist yet or may have different names in the npm registry. The Containerfile attempts to install these tools using both direct names and scoped/alternative names (e.g., `@openai/codex-cli`, `@google/generative-ai-cli`). The build process uses a best-effort approach, allowing the build to succeed even if specific packages are not found.
+
+If you know the correct package names for these tools, you can update the Containerfile accordingly.
+
+## Base Image
+
+This container is based on the official `node:24-slim` image, providing:
+- Node.js 24 (latest LTS version)
+- npm package manager
+- Lightweight Debian-based system
+- Python 3 and pip (for Python-based CLI tools)
+- Git and curl for development workflows
 
 ## Building the Container
 
