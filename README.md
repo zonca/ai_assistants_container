@@ -75,13 +75,6 @@ Once the GitHub Action has run, you can pull the pre-built image:
 podman pull ghcr.io/zonca/ai_assistants_container:latest
 ```
 
-## Base Image
-
-This container is based on the official `node:24-slim` image, providing:
-- Node.js 24 (latest LTS version)
-- npm package manager
-- Lightweight Debian-based system
-
 ## License
 
 See [LICENSE](LICENSE) file for details.

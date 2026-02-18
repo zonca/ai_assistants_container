@@ -9,15 +9,23 @@ echo ""
 # Function to check command version
 check_version() {
     local cmd=$1
-    local version_flag=${2:---version}
     
     echo "Testing: $cmd"
     if command -v "$cmd" &> /dev/null; then
         echo "✓ $cmd is installed"
-        if "$cmd" $version_flag 2>&1; then
-            echo "  Version check successful"
+        # Try multiple version flags
+        if "$cmd" --version 2>&1 >/dev/null; then
+            "$cmd" --version 2>&1 | head -1
+            return 0
+        elif "$cmd" -v 2>&1 >/dev/null; then
+            "$cmd" -v 2>&1 | head -1
+            return 0
+        elif "$cmd" version 2>&1 >/dev/null; then
+            "$cmd" version 2>&1 | head -1
+            return 0
         else
-            echo "  Version check failed (command exists but version flag may not be supported)"
+            echo "  (version command not available)"
+            return 0
         fi
     else
         echo "✗ $cmd is NOT installed"
@@ -34,11 +42,12 @@ successful_tools=()
 tools=("codex" "gemini" "opencode" "crush")
 
 for tool in "${tools[@]}"; do
-    if check_version "$tool" "--version" || check_version "$tool" "-v" || check_version "$tool" "version"; then
+    if check_version "$tool"; then
         successful_tools+=("$tool")
     else
         failed_tools+=("$tool")
     fi
+    echo ""
 done
 
 # Alternative command names to try
