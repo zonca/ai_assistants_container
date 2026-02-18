@@ -1,6 +1,8 @@
 #!/bin/bash
 # Test script to verify all installed AI coding assistants
 
+set -u  # Exit on undefined variables
+
 echo "========================================="
 echo "Testing AI Coding Assistants Installation"
 echo "========================================="
@@ -14,13 +16,13 @@ check_version() {
     if command -v "$cmd" &> /dev/null; then
         echo "✓ $cmd is installed"
         # Try multiple version flags
-        if "$cmd" --version 2>&1 >/dev/null; then
+        if "$cmd" --version >/dev/null 2>&1; then
             "$cmd" --version 2>&1 | head -1
             return 0
-        elif "$cmd" -v 2>&1 >/dev/null; then
+        elif "$cmd" -v >/dev/null 2>&1; then
             "$cmd" -v 2>&1 | head -1
             return 0
-        elif "$cmd" version 2>&1 >/dev/null; then
+        elif "$cmd" version >/dev/null 2>&1; then
             "$cmd" version 2>&1 | head -1
             return 0
         else
