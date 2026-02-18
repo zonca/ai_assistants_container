@@ -1,73 +1,83 @@
 # AI Assistants Container
 
-A lightweight container image based on Node.js 24 that provides a foundation for terminal-based AI coding assistants.
+A container image (Node.js-based) that bundles several terminal AI coding assistant CLIs and is published to GitHub Container Registry (GHCR).
 
 ## Features
 
-This container is designed to include the following terminal-based AI coding assistants:
+Included CLIs (installed globally via npm):
 - **codex**: OpenAI Codex CLI (`@openai/codex`)
 - **gemini**: Google Gemini CLI (`@google/gemini-cli`)
 - **opencode**: OpenCode CLI (`opencode-ai`)
 - **crush**: Charm Crush (`@charmland/crush`)
 
-## Base Image
+## Quickstart (Local)
 
-This container is based on the official `node:24-slim` image, providing:
-- Node.js 24 (latest LTS version)
-- npm package manager
-- Lightweight Debian-based system
-- Python 3 and pip (for Python-based CLI tools)
-- Git and curl for development workflows
+Pull the pre-built image:
+
+```bash
+docker pull ghcr.io/zonca/ai_assistants_container:latest
+```
+
+Run an interactive shell:
+
+```bash
+docker run --rm -it ghcr.io/zonca/ai_assistants_container:latest /bin/bash
+```
+
+Run the smoke test (verifies the CLIs exist and prints versions):
+
+```bash
+docker run --rm ghcr.io/zonca/ai_assistants_container:latest /app/test_versions.sh
+```
+
+Podman works the same way (`podman pull`, `podman run`).
 
 ## Building the Container
 
-### Using Podman (locally)
 ```bash
-podman build -f Containerfile -t ai-assistants-container .
+docker build -f Containerfile -t ai-assistants-container:test .
 ```
 
-### Using Docker (locally)
-```bash
-docker build -f Containerfile -t ai-assistants-container .
-```
+## Using on Perlmutter (NERSC)
 
-## Running the Container
+Perlmutter supports `podman-hpc`, which can pull OCI images and run them inside interactive or batch jobs.
 
-```bash
-# Run interactively
-podman run -it ai-assistants-container /bin/bash
+1. Pull the image (login node is fine):
 
-# Run the version test script
-podman run --rm ai-assistants-container /app/test_versions.sh
-```
+   ```bash
+   podman-hpc pull ghcr.io/zonca/ai_assistants_container:latest
+   ```
 
-## Testing
+2. Run interactively on a compute node:
 
-The container includes a test script (`test_versions.sh`) that verifies all installed tools and prints their versions:
+   ```bash
+   salloc -N 1 -q interactive -t 00:30:00
+   podman-hpc run --rm -it ghcr.io/zonca/ai_assistants_container:latest /bin/bash
+   ```
 
-```bash
-podman run --rm ai-assistants-container /app/test_versions.sh
-```
+3. Run the smoke test in a batch job (example):
+
+   ```bash
+   #!/bin/bash
+   #SBATCH -N 1
+   #SBATCH -q regular
+   #SBATCH -t 00:05:00
+
+   podman-hpc run --rm ghcr.io/zonca/ai_assistants_container:latest /app/test_versions.sh
+   ```
+
+Notes:
+- If you need to access files from `$SCRATCH`/`$PWD`, mount them with standard Podman flags (example: `-v "$PWD:/work" -w /work`).
+- Each CLI has its own authentication/config; pass env vars with `-e ...` and/or mount your config directory as needed.
 
 ## GitHub Actions CI/CD
 
-This repository includes a GitHub Actions workflow (`.github/workflows/build-container.yml`) that:
-1. Builds the container using podman-hpc (NERSC's podman action)
-2. Runs the test suite to verify all tools are functional
-3. Pushes the container image to GitHub Container Registry (ghcr.io)
+`.github/workflows/build-container.yml` builds the image with Podman, runs `/app/test_versions.sh`, and pushes tags to `ghcr.io/zonca/ai_assistants_container`.
 
-The workflow is triggered on:
-- Push to main/master branch
-- Pull requests to main/master branch
-- Manual workflow dispatch
-
-## Pulling the Pre-built Image
-
-Once the GitHub Action has run, you can pull the pre-built image:
-
-```bash
-podman pull ghcr.io/zonca/ai_assistants_container:latest
-```
+Tags include:
+- `latest` on the default branch
+- `pr-<n>` for pull requests
+- `sha-<shortsha>` for commit SHA tags
 
 ## License
 
