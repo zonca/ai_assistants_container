@@ -40,7 +40,7 @@ docker build -f Containerfile -t ai-assistants-container:test .
 
 ## Using on Perlmutter (NERSC)
 
-Perlmutter supports `podman-hpc`, which can pull OCI images and run them inside interactive or batch jobs.
+Perlmutter supports `podman-hpc`, which can pull OCI images and run them inside interactive or batch jobs. For this image, override the inherited Node entrypoint with `--entrypoint /bin/bash`; without that, `podman-hpc` fails looking for `docker-entrypoint.sh`.
 
 1. Pull the image (login node is fine):
 
@@ -52,7 +52,7 @@ Perlmutter supports `podman-hpc`, which can pull OCI images and run them inside 
 
    ```bash
    salloc -N 1 -q interactive -t 00:30:00
-   podman-hpc run --rm -it ghcr.io/zonca/ai_assistants_container:latest /bin/bash
+   podman-hpc run --rm -it --entrypoint /bin/bash ghcr.io/zonca/ai_assistants_container:latest
    ```
 
 3. Run the smoke test in a batch job (example):
@@ -63,12 +63,13 @@ Perlmutter supports `podman-hpc`, which can pull OCI images and run them inside 
    #SBATCH -q regular
    #SBATCH -t 00:05:00
 
-   podman-hpc run --rm ghcr.io/zonca/ai_assistants_container:latest /app/test_versions.sh
+   podman-hpc run --rm --entrypoint /bin/bash ghcr.io/zonca/ai_assistants_container:latest /app/test_versions.sh
    ```
 
 Notes:
 - If you need to access files from `$SCRATCH`/`$PWD`, mount them with standard Podman flags (example: `-v "$PWD:/work" -w /work`).
 - Each CLI has its own authentication/config; pass env vars with `-e ...` and/or mount your config directory as needed.
+- For measured startup timings and the exact benchmark commands used on Perlmutter, see [PERLMUTTER_GEMINI_BENCHMARK.md](PERLMUTTER_GEMINI_BENCHMARK.md).
 
 ## GitHub Actions CI/CD
 
