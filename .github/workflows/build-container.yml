@@ -1,6 +1,9 @@
 name: Build and Push Container
 
 on:
+  schedule:
+    # 02:00 UTC Tuesday runs Monday evening in US Pacific time
+    - cron: '0 2 * * 2'
   push:
     branches:
       - main
